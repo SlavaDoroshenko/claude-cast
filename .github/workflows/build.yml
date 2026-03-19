@@ -2,9 +2,9 @@ name: Build ScreenMirror
 
 on:
   push:
-    branches: [main]
+    branches: [main, master]
   pull_request:
-    branches: [main]
+    branches: [main, master]
   # Позволяет запускать вручную из вкладки Actions
   workflow_dispatch:
 
@@ -92,7 +92,7 @@ jobs:
     needs: [build-android, build-windows]
     runs-on: ubuntu-latest
     # Только на push в main (не на pull_request)
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
 
     permissions:
       contents: write
