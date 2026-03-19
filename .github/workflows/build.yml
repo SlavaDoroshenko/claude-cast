@@ -47,47 +47,7 @@ jobs:
           path: android-tv/app/build/outputs/apk/debug/app-debug.apk
           retention-days: 30
 
-  # ── Релиз APK — только Android, не ждёт Windows ────────────────────────────
-  release-apk:
-    name: Publish APK Release
-    needs: build-android
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
-
-    permissions:
-      contents: write
-
-    steps:
-      - name: Download Android APK
-        uses: actions/download-artifact@v4
-        with:
-          name: screenmirror-tv-debug
-          path: artifacts/android
-
-      - name: Create or update "latest" Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: latest
-          name: "Latest build"
-          prerelease: true
-          make_latest: true
-          files: artifacts/android/app-debug.apk
-          body: |
-            ## ScreenMirror TV — последняя сборка
-
-            ### Установка через Downloader (Aptoide)
-            Введи этот URL в приложении Downloader:
-            ```
-            https://github.com/SlavaDoroshenko/claude-cast/releases/latest/download/app-debug.apk
-            ```
-
-            ### Установка через USB флешку
-            1. Скачай `app-debug.apk` ниже
-            2. Скопируй на USB (FAT32)
-            3. TV: Настройки → Приложения → Неизвестные источники → ВКЛ
-            4. Открой файловый менеджер → установи APK
-
-  # ── Windows Electron installer (независимо от APK релиза) ──────────────────
+  # ── Windows Electron installer ──────────────────────────────────────────────
   build-windows:
     name: Windows Installer (.exe)
     runs-on: windows-latest
@@ -120,3 +80,48 @@ jobs:
             windows-client/dist/*.exe
             windows-client/dist/*.yml
           retention-days: 30
+
+  # ── Единый релиз — ждёт обе сборки ──────────────────────────────────────────
+  release:
+    name: Publish Release
+    needs: [build-android, build-windows]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download Android APK
+        uses: actions/download-artifact@v4
+        with:
+          name: screenmirror-tv-debug
+          path: artifacts/android
+
+      - name: Download Windows installer
+        uses: actions/download-artifact@v4
+        with:
+          name: screenmirror-windows-installer
+          path: artifacts/windows
+
+      - name: Create or update "latest" Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          name: "Latest build"
+          prerelease: true
+          make_latest: true
+          files: |
+            artifacts/android/app-debug.apk
+            artifacts/windows/*.exe
+          body: |
+            ## ScreenMirror — последняя сборка
+
+            ### Android TV
+            Введи в Downloader:
+            ```
+            https://github.com/SlavaDoroshenko/claude-cast/releases/latest/download/app-debug.apk
+            ```
+
+            ### Windows
+            Скачай и запусти `ScreenMirror Setup *.exe`

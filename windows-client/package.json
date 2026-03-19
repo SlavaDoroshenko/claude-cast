@@ -9,6 +9,7 @@
     "build:dir": "electron-builder --win --dir"
   },
   "dependencies": {
+    "loudness": "^0.4.2",
     "ws": "^8.16.0"
   },
   "devDependencies": {

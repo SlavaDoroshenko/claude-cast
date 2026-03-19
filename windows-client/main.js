@@ -10,6 +10,7 @@ const {
 const path  = require('path');
 const os    = require('os');
 const SignalingServer = require('./server/signaling');
+const loudness = require('loudness');
 
 // ─── Globals ─────────────────────────────────────────────────────────────────
 
@@ -134,6 +135,8 @@ ipcMain.handle('get-sources', async () => {
   }
 });
 
-ipcMain.handle('get-local-ip', ()  => getLocalIP());
-ipcMain.handle('get-pin',      ()  => SESSION_PIN);
-ipcMain.handle('get-hostname', ()  => os.hostname());
+ipcMain.handle('get-local-ip', ()      => getLocalIP());
+ipcMain.handle('get-pin',      ()      => SESSION_PIN);
+ipcMain.handle('get-hostname', ()      => os.hostname());
+ipcMain.handle('get-volume',   ()      => loudness.getVolume());
+ipcMain.handle('set-volume',   (_, v)  => loudness.setVolume(v));

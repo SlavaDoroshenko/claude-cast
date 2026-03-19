@@ -15,6 +15,7 @@ let statsInterval  = null;
 let reconnectTimer = null;
 let lastBytesSent  = 0;
 let lastStatsTime  = 0;
+let savedVolume    = null;  // volume level saved before muting
 
 const ICE_CONFIG = {
   iceServers:          [],   // LAN-only — no STUN required
@@ -199,6 +200,12 @@ async function startStreaming() {
 
   try {
     setStatus('connecting', 'Starting capture…');
+    // Mute laptop speakers — audio will play on TV only
+    try {
+      savedVolume = await window.electronAPI.getVolume();
+      await window.electronAPI.setVolume(0);
+    } catch { savedVolume = null; }
+
     localStream = await captureScreen(sourceId);
     isStreaming = true;
     UI.startBtn.classList.add('hidden');
@@ -219,6 +226,12 @@ async function startStreaming() {
 function stopStreaming() {
   if (!isStreaming) return;
   isStreaming = false;
+
+  // Restore laptop volume
+  if (savedVolume !== null) {
+    window.electronAPI.setVolume(savedVolume).catch(() => {});
+    savedVolume = null;
+  }
 
   if (localStream) {
     localStream.getTracks().forEach(t => t.stop());
@@ -248,7 +261,11 @@ async function captureScreen(sourceId) {
   }[quality] ?? { maxWidth: 1920, maxHeight: 1080 };
 
   const stream = await navigator.mediaDevices.getUserMedia({
-    audio: false,
+    audio: {
+      mandatory: {
+        chromeMediaSource: 'desktop',
+      },
+    },
     video: {
       mandatory: {
         chromeMediaSource:   'desktop',

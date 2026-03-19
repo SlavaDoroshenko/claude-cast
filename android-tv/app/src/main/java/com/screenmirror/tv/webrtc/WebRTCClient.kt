@@ -133,7 +133,7 @@ class WebRTCClient(
     fun createAnswer(onAnswer: (String) -> Unit) {
         val constraints = MediaConstraints().apply {
             mandatory.add(MediaConstraints.KeyValuePair("OfferToReceiveVideo", "true"))
-            mandatory.add(MediaConstraints.KeyValuePair("OfferToReceiveAudio", "false"))
+            mandatory.add(MediaConstraints.KeyValuePair("OfferToReceiveAudio", "true"))
         }
 
         peerConnection?.createAnswer(object : SdpObserver {
@@ -174,7 +174,7 @@ class WebRTCClient(
      */
     fun attachRenderer(renderer: SurfaceViewRenderer) {
         renderer.init(rootEglBase.eglBaseContext, null)
-        renderer.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT)
+        renderer.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FILL)
         renderer.setMirror(false)
         remoteVideoTrack?.addSink(renderer)
     }
