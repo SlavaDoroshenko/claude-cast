@@ -87,8 +87,10 @@ class MirrorActivity : AppCompatActivity() {
             override fun onConnectionStateChanged(state: PeerConnection.PeerConnectionState) {
                 runOnUiThread {
                     when (state) {
-                        PeerConnection.PeerConnectionState.CONNECTED ->
-                            setStatus("Connected")
+                        PeerConnection.PeerConnectionState.CONNECTED -> {
+                            // Не показываем overlay если видео уже идёт
+                            if (!videoAttached) setStatus("Connected")
+                        }
                         PeerConnection.PeerConnectionState.DISCONNECTED ->
                             setStatus("Connection lost…")
                         PeerConnection.PeerConnectionState.FAILED -> {

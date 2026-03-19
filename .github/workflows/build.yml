@@ -5,7 +5,6 @@ on:
     branches: [main, master]
   pull_request:
     branches: [main, master]
-  # Позволяет запускать вручную из вкладки Actions
   workflow_dispatch:
 
 jobs:
@@ -24,13 +23,11 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      # Устанавливает Gradle 8.4 и добавляет в PATH как `gradle`
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v3
         with:
           gradle-version: '8.4'
 
-      # Генерируем gradlew wrapper прямо в CI (не нужно коммитить JAR)
       - name: Generate Gradle wrapper
         working-directory: android-tv
         run: gradle wrapper --gradle-version=8.4
@@ -47,11 +44,50 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: screenmirror-tv-debug
-          # Имя файла будет screenmirror-tv-debug.apk
           path: android-tv/app/build/outputs/apk/debug/app-debug.apk
           retention-days: 30
 
-  # ── Windows Electron installer ─────────────────────────────────────────────
+  # ── Релиз APK — только Android, не ждёт Windows ────────────────────────────
+  release-apk:
+    name: Publish APK Release
+    needs: build-android
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download Android APK
+        uses: actions/download-artifact@v4
+        with:
+          name: screenmirror-tv-debug
+          path: artifacts/android
+
+      - name: Create or update "latest" Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          name: "Latest build"
+          prerelease: true
+          make_latest: true
+          files: artifacts/android/app-debug.apk
+          body: |
+            ## ScreenMirror TV — последняя сборка
+
+            ### Установка через Downloader (Aptoide)
+            Введи этот URL в приложении Downloader:
+            ```
+            https://github.com/SlavaDoroshenko/claude-cast/releases/latest/download/app-debug.apk
+            ```
+
+            ### Установка через USB флешку
+            1. Скачай `app-debug.apk` ниже
+            2. Скопируй на USB (FAT32)
+            3. TV: Настройки → Приложения → Неизвестные источники → ВКЛ
+            4. Открой файловый менеджер → установи APK
+
+  # ── Windows Electron installer (независимо от APK релиза) ──────────────────
   build-windows:
     name: Windows Installer (.exe)
     runs-on: windows-latest
@@ -74,7 +110,6 @@ jobs:
         working-directory: windows-client
         run: npm run build
         env:
-          # Отключает авто-публикацию в GitHub Releases (мы используем artifact)
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload installer artifact
@@ -85,58 +120,3 @@ jobs:
             windows-client/dist/*.exe
             windows-client/dist/*.yml
           retention-days: 30
-
-  # ── Создать/обновить Release "latest" при каждом push в main ──────────────
-  release:
-    name: Publish Release
-    needs: [build-android, build-windows]
-    runs-on: ubuntu-latest
-    # Только на push в main (не на pull_request)
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
-
-    permissions:
-      contents: write
-
-    steps:
-      - name: Download Android APK
-        uses: actions/download-artifact@v4
-        with:
-          name: screenmirror-tv-debug
-          path: artifacts/android
-
-      - name: Download Windows installer
-        uses: actions/download-artifact@v4
-        with:
-          name: screenmirror-windows-installer
-          path: artifacts/windows
-
-      # Создаёт/перезаписывает тег "latest" — APK всегда доступен по одному URL
-      - name: Create or update "latest" Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: latest
-          name: "Latest build"
-          prerelease: true
-          make_latest: true
-          files: |
-            artifacts/android/app-debug.apk
-            artifacts/windows/*.exe
-          body: |
-            ## ScreenMirror — последняя сборка
-
-            ### Установка на Android TV (Skyline / любой Android TV)
-
-            **Способ 1 — через Downloader app (проще всего):**
-            1. Установи [Downloader](https://play.google.com/store/apps/details?id=com.esaba.downloader) из Play Store на TV
-            2. Открой Downloader → введи URL ниже → Install
-            ```
-            https://github.com/ТВОЙ_АККАУНТ/claude-cast/releases/latest/download/app-debug.apk
-            ```
-
-            **Способ 2 — через USB флешку:**
-            1. Скачай `app-debug.apk` → скопируй на USB (FAT32)
-            2. TV: Настройки → Приложения → Неизвестные источники → Включить
-            3. Открой файловый менеджер → установи APK
-
-            ### Установка на ноутбук (Windows)
-            Скачай и запусти `ScreenMirror Setup *.exe`
