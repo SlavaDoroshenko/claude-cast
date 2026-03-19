@@ -103,7 +103,8 @@ class WebRTCClient(
             override fun onDataChannel(dc: DataChannel?)                              = Unit
             override fun onRenegotiationNeeded()                                      = Unit
             override fun onAddTrack(r: RtpReceiver?, streams: Array<out MediaStream>?) = Unit
-        }) ?: run {
+        })
+        if (peerConnection == null) {
             listener.onError("Failed to create PeerConnection")
         }
     }
