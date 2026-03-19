@@ -1,0 +1,33 @@
+appId: com.screenmirror.app
+productName: ScreenMirror
+copyright: "Copyright © 2024 ScreenMirror (Open Source — MIT License)"
+
+directories:
+  output: dist
+  buildResources: assets
+
+# Include production deps, exclude dev
+files:
+  - "**/*"
+  - "!node_modules/**/*"
+  - "node_modules/ws/**/*"
+  - "!dist/**/*"
+  - "!*.md"
+
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+  # Uncomment and add icon.ico to assets/ to use a custom icon:
+  # icon: assets/icon.ico
+
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: ScreenMirror
+  installerHeaderIcon: assets/icon.ico
+
+publish: null

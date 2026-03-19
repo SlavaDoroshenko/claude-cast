@@ -1,0 +1,20 @@
+# ── Windows client ──────────────────────────────────────────────────────────
+windows-client/node_modules/
+windows-client/dist/
+windows-client/.webpack/
+
+# ── Android ──────────────────────────────────────────────────────────────────
+android-tv/.gradle/
+android-tv/build/
+android-tv/app/build/
+android-tv/local.properties
+android-tv/.idea/
+android-tv/**/*.iml
+*.keystore
+!debug.keystore
+
+# ── OS / Editor ──────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+*.log
+.env

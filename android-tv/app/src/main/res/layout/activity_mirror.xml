@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black">
+
+    <!-- Full-screen WebRTC video surface -->
+    <org.webrtc.SurfaceViewRenderer
+        android:id="@+id/svRenderer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
+    <!-- Loading / status overlay (shown until video starts) -->
+    <LinearLayout
+        android:id="@+id/layoutStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="32dp">
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:indeterminateTint="@color/accent_purple"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:id="@+id/tvStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/lbl_connecting"
+            android:textSize="18sp"
+            android:textColor="@color/text_primary" />
+
+    </LinearLayout>
+
+    <!-- Overlay controls (shown on D-pad press, auto-hide after 3 s) -->
+    <LinearLayout
+        android:id="@+id/layoutControls"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:orientation="horizontal"
+        android:background="#AA000000"
+        android:padding="16dp"
+        android:gravity="center_vertical"
+        android:visibility="invisible">
+
+        <TextView
+            android:id="@+id/tvOverlayTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/app_name"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_primary" />
+
+        <!-- Stats chip -->
+        <TextView
+            android:id="@+id/tvOverlayStats"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="13sp"
+            android:textColor="@color/accent_green"
+            android:fontFamily="monospace"
+            android:layout_marginEnd="24dp" />
+
+        <Button
+            android:id="@+id/btnDisconnect"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="@string/btn_disconnect"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/bg_button_danger"
+            android:focusable="true" />
+
+    </LinearLayout>
+
+</FrameLayout>

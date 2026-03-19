@@ -1,0 +1,10 @@
+# Auto-detect text files and normalize line endings
+* text=auto
+
+# Unix shell scripts must keep LF (иначе сломается в Linux CI)
+*.sh        text eol=lf
+gradlew     text eol=lf
+
+# Windows batch files должны быть CRLF
+*.bat       text eol=crlf
+gradlew.bat text eol=crlf

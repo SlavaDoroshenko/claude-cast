@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg_primary"
+    android:gravity="center">
+
+    <!-- App title -->
+    <TextView
+        android:id="@+id/tvAppTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/app_name"
+        android:textSize="42sp"
+        android:textStyle="bold"
+        android:textColor="@color/text_primary"
+        android:layout_marginBottom="8dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Free screen mirroring — open source"
+        android:textSize="16sp"
+        android:textColor="@color/text_muted"
+        android:layout_marginBottom="52dp" />
+
+    <!-- Primary action -->
+    <Button
+        android:id="@+id/btnConnect"
+        android:layout_width="320dp"
+        android:layout_height="64dp"
+        android:text="@string/btn_connect"
+        android:textSize="18sp"
+        android:textColor="#FFFFFF"
+        android:background="@drawable/bg_button_primary"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:layout_marginBottom="20dp" />
+
+    <!-- Manual PIN entry -->
+    <Button
+        android:id="@+id/btnEnterPin"
+        android:layout_width="320dp"
+        android:layout_height="56dp"
+        android:text="@string/btn_enter_pin"
+        android:textSize="16sp"
+        android:textColor="@color/accent_purple"
+        android:background="@drawable/bg_button_outline"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:layout_marginBottom="40dp" />
+
+    <!-- Recent connections label -->
+    <TextView
+        android:id="@+id/tvRecentLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/lbl_recent"
+        android:textSize="12sp"
+        android:textAllCaps="true"
+        android:letterSpacing="0.1"
+        android:textColor="@color/text_muted"
+        android:layout_marginBottom="12dp"
+        android:visibility="gone" />
+
+    <!-- Recent devices list -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvRecent"
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:focusable="true" />
+
+</LinearLayout>

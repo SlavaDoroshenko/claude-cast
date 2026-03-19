@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:background="@color/bg_primary"
+    android:padding="48dp">
+
+    <!-- Left panel: auto-discovery -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_marginEnd="32dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Discovered Computers"
+            android:textSize="14sp"
+            android:textAllCaps="true"
+            android:letterSpacing="0.1"
+            android:textColor="@color/text_muted"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:id="@+id/tvScanStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/lbl_scanning"
+            android:textSize="14sp"
+            android:textColor="@color/text_muted"
+            android:layout_marginBottom="8dp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvDevices"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:focusable="true" />
+
+        <Button
+            android:id="@+id/btnRescan"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:text="Scan Again"
+            android:textColor="@color/accent_green"
+            android:background="@drawable/bg_button_outline_green"
+            android:layout_marginTop="12dp"
+            android:focusable="true" />
+
+    </LinearLayout>
+
+    <!-- Vertical divider -->
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="@color/divider"
+        android:layout_marginEnd="32dp" />
+
+    <!-- Right panel: manual PIN entry -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Manual Connection"
+            android:textSize="14sp"
+            android:textAllCaps="true"
+            android:letterSpacing="0.1"
+            android:textColor="@color/text_muted"
+            android:layout_marginBottom="24dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Computer IP Address"
+            android:textSize="12sp"
+            android:textColor="@color/text_muted"
+            android:layout_marginBottom="6dp" />
+
+        <EditText
+            android:id="@+id/etIpAddress"
+            android:layout_width="280dp"
+            android:layout_height="52dp"
+            android:hint="192.168.1.100"
+            android:textSize="18sp"
+            android:textColor="@color/text_primary"
+            android:textColorHint="@color/text_dim"
+            android:inputType="textNoSuggestions"
+            android:background="@drawable/bg_edit_text"
+            android:padding="12dp"
+            android:imeOptions="actionNext"
+            android:focusable="true"
+            android:layout_marginBottom="20dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="PIN Code"
+            android:textSize="12sp"
+            android:textColor="@color/text_muted"
+            android:layout_marginBottom="6dp" />
+
+        <!-- PIN digit boxes -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginBottom="32dp">
+
+            <EditText
+                android:id="@+id/pinDigit1"
+                android:layout_width="56dp"
+                android:layout_height="64dp"
+                android:inputType="number"
+                android:maxLength="1"
+                android:gravity="center"
+                android:textSize="28sp"
+                android:textColor="@color/accent_purple"
+                android:background="@drawable/bg_pin_digit"
+                android:layout_marginEnd="8dp"
+                android:focusable="true" />
+
+            <EditText
+                android:id="@+id/pinDigit2"
+                android:layout_width="56dp"
+                android:layout_height="64dp"
+                android:inputType="number"
+                android:maxLength="1"
+                android:gravity="center"
+                android:textSize="28sp"
+                android:textColor="@color/accent_purple"
+                android:background="@drawable/bg_pin_digit"
+                android:layout_marginEnd="8dp"
+                android:focusable="true" />
+
+            <EditText
+                android:id="@+id/pinDigit3"
+                android:layout_width="56dp"
+                android:layout_height="64dp"
+                android:inputType="number"
+                android:maxLength="1"
+                android:gravity="center"
+                android:textSize="28sp"
+                android:textColor="@color/accent_purple"
+                android:background="@drawable/bg_pin_digit"
+                android:layout_marginEnd="8dp"
+                android:focusable="true" />
+
+            <EditText
+                android:id="@+id/pinDigit4"
+                android:layout_width="56dp"
+                android:layout_height="64dp"
+                android:inputType="number"
+                android:maxLength="1"
+                android:gravity="center"
+                android:textSize="28sp"
+                android:textColor="@color/accent_purple"
+                android:background="@drawable/bg_pin_digit"
+                android:focusable="true" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnConnectManual"
+            android:layout_width="280dp"
+            android:layout_height="56dp"
+            android:text="Connect"
+            android:textSize="16sp"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/bg_button_primary"
+            android:focusable="true" />
+
+    </LinearLayout>
+
+</LinearLayout>

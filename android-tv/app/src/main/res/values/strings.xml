@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ScreenMirror</string>
+    <string name="title_connect">Connect to Computer</string>
+    <string name="title_mirror">Screen Mirror</string>
+
+    <!-- Main -->
+    <string name="btn_connect">Connect to Computer</string>
+    <string name="btn_enter_pin">Enter PIN Manually</string>
+    <string name="lbl_recent">Recently Connected</string>
+    <string name="hint_no_recent">No recent connections</string>
+
+    <!-- Connect -->
+    <string name="lbl_discovered">Discovered Computers</string>
+    <string name="lbl_scanning">Scanning network…</string>
+    <string name="lbl_no_found">No computers found. Make sure ScreenMirror is running on your PC.</string>
+    <string name="hint_pin">Enter the PIN shown on your PC</string>
+    <string name="btn_connect_pin">Connect</string>
+    <string name="lbl_pin_entry">Manual Connection</string>
+    <string name="lbl_pin_digits">PIN</string>
+
+    <!-- Mirror -->
+    <string name="lbl_connecting">Connecting…</string>
+    <string name="lbl_waiting">Waiting for stream…</string>
+    <string name="btn_disconnect">Disconnect</string>
+    <string name="dialog_disconnect_title">Disconnect?</string>
+    <string name="dialog_disconnect_msg">Stop mirroring and return to home screen?</string>
+    <string name="dialog_yes">Yes, disconnect</string>
+    <string name="dialog_no">Cancel</string>
+</resources>

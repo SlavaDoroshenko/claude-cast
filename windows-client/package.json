@@ -1,0 +1,18 @@
+{
+  "name": "screen-mirror",
+  "version": "1.0.0",
+  "description": "Free open-source screen mirroring — Windows client",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win",
+    "build:dir": "electron-builder --win --dir"
+  },
+  "dependencies": {
+    "ws": "^8.16.0"
+  },
+  "devDependencies": {
+    "electron": "^29.1.4",
+    "electron-builder": "^24.13.3"
+  }
+}
