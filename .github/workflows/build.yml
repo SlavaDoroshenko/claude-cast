@@ -86,13 +86,13 @@ jobs:
             windows-client/dist/*.yml
           retention-days: 30
 
-  # ── Создать GitHub Release при теге vX.Y.Z ─────────────────────────────────
+  # ── Создать/обновить Release "latest" при каждом push в main ──────────────
   release:
-    name: Create Release
+    name: Publish Release
     needs: [build-android, build-windows]
     runs-on: ubuntu-latest
-    # Запускается только при пуше тега вида v1.0.0
-    if: startsWith(github.ref, 'refs/tags/v')
+    # Только на push в main (не на pull_request)
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
     permissions:
       contents: write
@@ -110,21 +110,33 @@ jobs:
           name: screenmirror-windows-installer
           path: artifacts/windows
 
-      - name: Create GitHub Release
+      # Создаёт/перезаписывает тег "latest" — APK всегда доступен по одному URL
+      - name: Create or update "latest" Release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: latest
+          name: "Latest build"
+          prerelease: true
+          make_latest: true
           files: |
             artifacts/android/app-debug.apk
             artifacts/windows/*.exe
           body: |
-            ## ScreenMirror ${{ github.ref_name }}
+            ## ScreenMirror — последняя сборка
 
-            ### Установка
+            ### Установка на Android TV (Skyline / любой Android TV)
 
-            **На ноутбуке (Windows):**
+            **Способ 1 — через Downloader app (проще всего):**
+            1. Установи [Downloader](https://play.google.com/store/apps/details?id=com.esaba.downloader) из Play Store на TV
+            2. Открой Downloader → введи URL ниже → Install
+            ```
+            https://github.com/ТВОЙ_АККАУНТ/claude-cast/releases/latest/download/app-debug.apk
+            ```
+
+            **Способ 2 — через USB флешку:**
+            1. Скачай `app-debug.apk` → скопируй на USB (FAT32)
+            2. TV: Настройки → Приложения → Неизвестные источники → Включить
+            3. Открой файловый менеджер → установи APK
+
+            ### Установка на ноутбук (Windows)
             Скачай и запусти `ScreenMirror Setup *.exe`
-
-            **На Android TV:**
-            1. Включи Developer Options → ADB via Network
-            2. `adb connect <IP_телевизора>:5555`
-            3. `adb install app-debug.apk`
