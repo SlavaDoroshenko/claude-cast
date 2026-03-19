@@ -8,14 +8,23 @@ const os = require('os');
 
 function getLocalIP() {
   const ifaces = os.networkInterfaces();
+  const candidates = [];
+
   for (const name of Object.keys(ifaces)) {
     for (const iface of ifaces[name]) {
       if (iface.family === 'IPv4' && !iface.internal) {
-        return iface.address;
+        candidates.push({ ip: iface.address });
       }
     }
   }
-  return '127.0.0.1';
+
+  const wifi = candidates.find(c => c.ip.startsWith('192.168.'));
+  if (wifi) return wifi.ip;
+
+  const lan10 = candidates.find(c => /^10\.[01]\./.test(c.ip));
+  if (lan10) return lan10.ip;
+
+  return candidates[0]?.ip ?? '127.0.0.1';
 }
 
 // ─── SignalingServer ──────────────────────────────────────────────────────────

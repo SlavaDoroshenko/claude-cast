@@ -23,14 +23,30 @@ const SESSION_PIN = String(Math.floor(1000 + Math.random() * 9000));
 
 function getLocalIP() {
   const ifaces = os.networkInterfaces();
+  const candidates = [];
+
   for (const name of Object.keys(ifaces)) {
     for (const iface of ifaces[name]) {
       if (iface.family === 'IPv4' && !iface.internal) {
-        return iface.address;
+        candidates.push({ ip: iface.address, name });
       }
     }
   }
-  return '127.0.0.1';
+
+  // Предпочитаем 192.168.x.x — типичная домашняя Wi-Fi сеть
+  const wifi = candidates.find(c => c.ip.startsWith('192.168.'));
+  if (wifi) return wifi.ip;
+
+  // Затем 10.0.x.x / 10.1.x.x — некоторые роутеры
+  const lan10 = candidates.find(c => /^10\.[01]\./.test(c.ip));
+  if (lan10) return lan10.ip;
+
+  // Затем 172.16-31.x.x
+  const lan172 = candidates.find(c => /^172\.(1[6-9]|2\d|3[01])\./.test(c.ip));
+  if (lan172) return lan172.ip;
+
+  // Fallback — любой не-internal
+  return candidates[0]?.ip ?? '127.0.0.1';
 }
 
 // ─── Window ──────────────────────────────────────────────────────────────────
