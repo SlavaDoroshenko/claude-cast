@@ -260,25 +260,29 @@ async function captureScreen(sourceId) {
     'source':{ maxWidth: 7680, maxHeight: 4320 },
   }[quality] ?? { maxWidth: 1920, maxHeight: 1080 };
 
-  const stream = await navigator.mediaDevices.getUserMedia({
-    audio: {
-      mandatory: {
-        chromeMediaSource: 'desktop',
-      },
+  const videoConstraints = {
+    mandatory: {
+      chromeMediaSource:   'desktop',
+      chromeMediaSourceId: sourceId,
+      maxWidth:   maxRes.maxWidth,
+      maxHeight:  maxRes.maxHeight,
+      minFrameRate: Math.min(fps, 15),
+      maxFrameRate: fps,
     },
-    video: {
-      mandatory: {
-        chromeMediaSource:   'desktop',
-        chromeMediaSourceId: sourceId,
-        maxWidth:   maxRes.maxWidth,
-        maxHeight:  maxRes.maxHeight,
-        minFrameRate: Math.min(fps, 15),
-        maxFrameRate: fps,
-      },
-    },
-  });
+  };
 
-  return stream;
+  // Try with system audio; fall back to video-only if the OS doesn't support loopback
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio: { mandatory: { chromeMediaSource: 'desktop' } },
+      video: videoConstraints,
+    });
+    if (stream.getAudioTracks().length === 0) toast('No system audio detected');
+    return stream;
+  } catch {
+    toast('System audio unavailable — video only');
+    return navigator.mediaDevices.getUserMedia({ audio: false, video: videoConstraints });
+  }
 }
 
 // ─── WebRTC ───────────────────────────────────────────────────────────────────
@@ -327,7 +331,7 @@ async function createOffer() {
   });
 
   offer.sdp = preferH264(offer.sdp);
-  offer.sdp = setBitrateInSdp(offer.sdp, 8000); // 8 Mbps max
+  offer.sdp = setBitrateInSdp(offer.sdp, 20000); // 20 Mbps — sharp text over LAN
 
   await peerConnection.setLocalDescription(offer);
   sendMsg({ type: 'offer', sdp: offer.sdp });

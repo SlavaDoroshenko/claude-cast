@@ -79,11 +79,17 @@ class WebRTCClient(
             }
 
             override fun onTrack(transceiver: RtpTransceiver) {
-                val track = transceiver.receiver.track()
-                if (track is VideoTrack) {
-                    Log.d(TAG, "Video track received")
-                    remoteVideoTrack = track
-                    listener.onVideoTrackReceived(track)
+                when (val track = transceiver.receiver.track()) {
+                    is VideoTrack -> {
+                        Log.d(TAG, "Video track received")
+                        remoteVideoTrack = track
+                        listener.onVideoTrackReceived(track)
+                    }
+                    is AudioTrack -> {
+                        Log.d(TAG, "Audio track received — enabling")
+                        track.setEnabled(true)
+                    }
+                    else -> Unit
                 }
             }
 
