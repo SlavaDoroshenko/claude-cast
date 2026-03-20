@@ -1,8 +1,10 @@
 package com.screenmirror.tv.webrtc
 
 import android.content.Context
+import android.media.AudioAttributes
 import android.util.Log
 import org.webrtc.*
+import org.webrtc.audio.JavaAudioDeviceModule
 
 private const val TAG = "WebRTCClient"
 
@@ -50,6 +52,17 @@ class WebRTCClient(
                 .createInitializationOptions()
         )
 
+        // Route audio through the media path (HDMI/TV speakers) instead of
+        // WebRTC's default USAGE_VOICE_COMMUNICATION which bypasses HDMI on Android TV
+        val adm = JavaAudioDeviceModule.builder(context)
+            .setAudioAttributes(
+                AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_MEDIA)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_MOVIE)
+                    .build()
+            )
+            .createAudioDeviceModule()
+
         factory = PeerConnectionFactory.builder()
             .setVideoDecoderFactory(
                 DefaultVideoDecoderFactory(rootEglBase.eglBaseContext)
@@ -57,7 +70,10 @@ class WebRTCClient(
             .setVideoEncoderFactory(
                 DefaultVideoEncoderFactory(rootEglBase.eglBaseContext, true, true)
             )
+            .setAudioDeviceModule(adm)
             .createPeerConnectionFactory()
+
+        adm.release() // factory retains its own reference
     }
 
     // ── PeerConnection ────────────────────────────────────────────────────────
